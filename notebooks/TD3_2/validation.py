@@ -7,7 +7,7 @@ import torch
 
 # Runs policy for X episodes and returns average reward
 # A fixed seed is used for the eval environment
-from notebooks.TD3_2 import TD3, utils
+from notebooks.TD3_2 import TD3, replay_buffer
 
 
 def eval_policy(policy, env_name, seed, eval_episodes=10):
@@ -91,6 +91,6 @@ if __name__ == "__main__":
         kwargs["policy_freq"] = args.policy_freq
         policy = TD3.TD3(**kwargs)
         policy.load("./models/model-" + str(7017))
-        replay_buffer = utils.ReplayBuffer(state_dim, action_dim)
+        replay_buffer = replay_buffer.ReplayBuffer(state_dim, action_dim)
 
 evaluations = [eval_policy(policy, env, args.seed)]
