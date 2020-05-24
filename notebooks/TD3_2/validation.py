@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     gym.envs.register(
         id='CustomEnv-v333',
-        entry_point='envs.custom_env_dir:RobotEnv')
+        entry_point='envs.ur3_simenv:RobotEnv')
 
     env = gym.make("CustomEnv-v333")
 

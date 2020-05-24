@@ -13,7 +13,7 @@ class HindsightExperienceReplayBuffer(object):
     def add(self, state, action, next_state, reward, done):
         self.temp_storage.add(state, action, next_state, reward, done)
         if(self.current_final ==  np.zeros(3, dtype=float)).all():        #initially, when the current_final is empty
-            self.current_final = state[5:8]                         #initialise with first response todo: remove hardcoded indices
+            self.current_final = state[2:5]                         #initialise with first response todo: remove hardcoded indices
             #print("current final assigned as ", self.current_final)
 
     def sample(self, batch_size):
@@ -27,13 +27,13 @@ class HindsightExperienceReplayBuffer(object):
 
             #print("New target  ", final_pos)
 
-            istate[5] = istate[5] + self.current_final[0] - final_pos[0]        # state is targetpos - robotpos, subtract by targetpos (final before change) and
-            istate[6] = istate[6] + self.current_final[1] - final_pos[1]
-            istate[7] = istate[7] + self.current_final[2] - final_pos[2]
+            istate[2] = istate[2] + self.current_final[0] - final_pos[0]        # state is targetpos - robotpos, subtract by targetpos (final before change) and
+            istate[3] = istate[3] + self.current_final[1] - final_pos[1]
+            istate[4] = istate[4] + self.current_final[2] - final_pos[2]
 
-            inext_state[5] = inext_state[5] + self.current_final[0] - final_pos[0]
-            inext_state[6] = inext_state[6] + self.current_final[1] - final_pos[1]
-            inext_state[7] = inext_state[7] + self.current_final[2] - final_pos[2]
+            inext_state[2] = inext_state[2] + self.current_final[0] - final_pos[0]
+            inext_state[3] = inext_state[3] + self.current_final[1] - final_pos[1]
+            inext_state[4] = inext_state[4] + self.current_final[2] - final_pos[2]
             #print("State after ", inext_state)
 
             self.replay_storage.add(istate.cpu(), iaction.cpu(), inext_state.cpu(), ireward.cpu(), idone.cpu())        #modify before

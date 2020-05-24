@@ -10,6 +10,8 @@ common = "*"
 gym = "*"
 e = "*"
 torch = "*"
+pytorch = "*"
+torchvision = "*"
 
 [requires]
 python_version = "3.5"

@@ -9,6 +9,7 @@ import torch
 # A fixed seed is used for the eval environment
 from notebooks.TD3_2 import TD3, replay_buffer
 from notebooks.TD3_2.experience_replay_buffer import HindsightExperienceReplayBuffer
+from notebooks.TD3_2.replay_buffer import ReplayBuffer
 
 
 def eval_policy(policy, env_name, seed, eval_episodes=10):
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 	parser.add_argument("--seed", default=0, type=int)              # Sets Gym, PyTorch and Numpy seeds
 	parser.add_argument("--start_timesteps", default=25e3, type=int)# Time steps initial random policy is used
 	parser.add_argument("--eval_freq", default=5e3, type=int)       # How often (time steps) we evaluate
-	parser.add_argument("--max_timesteps", default=12e5, type=int)   # Max time steps to run environment
+	parser.add_argument("--max_timesteps", default=4e5, type=int)   # Max time steps to run environment
 	parser.add_argument("--expl_noise", default=0.1)                # Std of Gaussian exploration noise
 	parser.add_argument("--batch_size", default=256, type=int)      # Batch size for both actor and critic
 	parser.add_argument("--discount", default=0.99)                 # Discount factor
@@ -65,7 +66,7 @@ if __name__ == "__main__":
 
 	gym.envs.register(
 		id='CustomEnv-v333',
-		entry_point='envs.custom_env_dir:RobotEnv')
+		entry_point='envs.ur3_simenv:RobotEnv')
 
 	env = gym.make("CustomEnv-v333")
 
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 		kwargs["noise_clip"] = args.noise_clip * max_action
 		kwargs["policy_freq"] = args.policy_freq
 		policy = TD3.TD3(**kwargs)
-		policy.load("./models/model-her")
+		#policy.load("./models/model-her")
 	replay_buffer = HindsightExperienceReplayBuffer(state_dim, action_dim)
 
 	# Evaluate untrained policy
@@ -130,7 +131,7 @@ if __name__ == "__main__":
 		if bool(done) | epoch_end:
 			reward = 1
 			replay_buffer.add(state, action, next_state, reward, 1)	#goes to temp buffer. todo: should done bool be 1
-			replay_buffer.move_to_replay(next_state[5:8]) #moves to replay and flushes temp fixme: does next state have the final state?
+			replay_buffer.move_to_replay(next_state[2:5]) #moves to replay and flushes temp fixme: does next state have the final state?
 		else:
 			replay_buffer.add(state, action, next_state, reward, done_bool)	#goes to temp buffer
 
