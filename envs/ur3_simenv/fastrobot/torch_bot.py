@@ -27,10 +27,8 @@ class torchbot:
         self.a = np.array([self.a1, self.a2, self.a3, self.a4, self.a5, self.a6])  # unit: mm
         self.alpha = np.array([pi / 2, 0, 0, pi / 2, -pi / 2, 0])  # unit: radian
 
-
-    def tcp(self, i, theta):
+    def tcp_internal(self, i, theta):
         """Calculate the tcp between two links.
-
         Args:
             i: A target index of joint value.
             theta: A list of joint value solution. (unit: radian)
@@ -38,7 +36,6 @@ class torchbot:
         Returns:
             An tcp of Link l w.r.t. Link l-1, where l = i + 1.
         """
-
         Rot_z = torch.eye(4).to(self.device)
         Rot_z[0, 0] = Rot_z[1, 1] = cos(theta[i])
         Rot_z[0, 1] = -sin(theta[i])
@@ -61,7 +58,7 @@ class torchbot:
 
     # Forward Kinematics
 
-    def fwd_kin(self, theta, i_unit='r', o_unit='n'):
+    def get_tcp(self, theta, i_unit='r', o_unit='n'):
         """Solve the tcp based on a list of joint values.
 
         Args:
@@ -79,6 +76,6 @@ class torchbot:
             theta = [radians(i) for i in theta]
 
         for i in range(6):
-            T_06_PT *= self.tcp(i, theta)
+            T_06_PT *= self.tcp_internal(i, theta)
 
             return T_06_PT
